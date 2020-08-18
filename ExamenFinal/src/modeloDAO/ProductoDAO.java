@@ -10,10 +10,11 @@ import interfaces.CRUD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import modelo.Producto;
 import modelo.Proveedor;
-
 
 /**
  *
@@ -28,22 +29,109 @@ public class ProductoDAO implements CRUD{
     
     @Override
     public List listarproducto() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Producto> productos = new ArrayList<>();
+        String consulta = " select *  "
+                        + "from producto ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            rs = pst.executeQuery();
+            while(rs.next()){
+                Producto producto = new Producto();
+                producto.setIdproducto(rs.getInt("idproducto"));
+                producto.setCodigo(rs.getString("codigo"));
+                producto.setNombre(rs.getString("nombre"));                
+                producto.setPrecio(rs.getDouble("precio"));
+                producto.setStock(rs.getInt("stock"));
+                producto.setEstado(rs.getString("Estado"));
+                productos.add(producto);
+            }            
+        } catch (SQLException t) {
+            System.out.println("Error durante el select");
+        }
+        return productos;
     }
 
     @Override
     public Producto buscarproducto(int idproducto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         String consulta = " select *  "
+                        + "from producto  "
+                        + "where idproducto = " + idproducto + "; ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            rs = pst.executeQuery();
+            while (rs.next()) {                
+                t.setIdproducto(rs.getInt("idproducto"));
+                t.setCodigo(rs.getString("codigo"));
+                t.setNombre(rs.getString("nombre"));                
+                t.setPrecio(rs.getDouble("precio"));
+                t.setStock(rs.getInt("stock"));
+                t.setEstado(rs.getString("estado"));
+            }
+        } catch (SQLException t) {
+            System.out.println("Error durante el select");        
+        }
+        return t;
     }
 
     @Override
     public boolean agregarproducto(Producto producto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String consulta = " insert into producto(codigo, nombre, precio, stock, estado)  "
+                        + " values(  "
+                        + "'"+ producto.getCodigo() +"',  "
+                        + "'"+ producto.getNombre() +"', "
+                        + "'"+ producto.getPrecio() +"',  "
+                        + "'"+ producto.getStock() +"',  "                        
+                        + "'"+ producto.getEstado() +"'); ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            pst.executeUpdate();
+        } catch (SQLException t) {
+            System.out.println("Error durante la insert del nuevo producto");
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean editarproducto(Producto producto) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         String consulta = " update producto  "
+                        + " set  "
+                        + " codigo = '"+ producto.getCodigo()+"', "
+                        + " nombre = '"+ producto.getNombre() +"', "
+                        + " precio = '"+ producto.getPrecio() +"', "
+                        + " stock = '"+ producto.getStock() +"', "
+                        + " estado = '"+ producto.getEstado() +"'  "
+                        + " where "
+                        + " idproducto = " + producto.getIdproducto() + "; ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            pst.executeUpdate();
+        } catch (SQLException t) {
+            System.out.println("Error durante la edición del producto");
+            return true;
+        }
+        return false;
+    }
+
+   
+    public boolean eliminarproducto(int idproducto) {
+       String consulta = " delete  "
+                        + " from producto  "
+                        + " where "
+                        + " idprducto = " + idproducto;
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            pst.executeUpdate();
+        } catch (SQLException t) {
+            System.out.println("Error durante la elimiación del producto");
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -75,5 +163,5 @@ public class ProductoDAO implements CRUD{
     public boolean eliminarproveedor(Proveedor proveedor) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }
