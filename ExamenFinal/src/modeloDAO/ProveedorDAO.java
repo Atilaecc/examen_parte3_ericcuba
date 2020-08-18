@@ -10,8 +10,11 @@ import interfaces.CRUD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import modelo.Producto;
+
 import modelo.Proveedor;
 
 /**
@@ -27,27 +30,109 @@ public class ProveedorDAO implements CRUD {
     
     @Override
     public List listarproveedor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ArrayList<Proveedor> proveedores = new ArrayList<>();
+        String consulta = " select *  "
+                        + "from producto ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            rs = pst.executeQuery();
+            while(rs.next()){
+                Proveedor proveedor = new Proveedor();
+                proveedor.setIdproveedor(rs.getInt("idproveedor"));
+             
+                proveedor.setNombre(rs.getString("nombre"));                
+                proveedor.setRuc(rs.getString("ruc"));
+                proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setEstado(rs.getString("Estado"));
+                proveedores.add(proveedor);
+            }            
+        } catch (SQLException v) {
+            System.out.println("Error durante el select");
+        }
+        return proveedores;
     }
 
     @Override
     public Proveedor buscarproveedor(int idproveedor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String consulta = " select *  "
+                        + "from proveedor  "
+                        + "where idproveedor = " + idproveedor + "; ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            rs = pst.executeQuery();
+            while (rs.next()) {                
+                v.setIdproveedor(rs.getInt("idproducto"));
+                
+                v.setNombre(rs.getString("nombre"));                
+                v.setRuc(rs.getString("ruc"));
+                v.setDireccion(rs.getString("direccion"));
+                v.setEstado(rs.getString("estado"));
+            }
+        } catch (SQLException v) {
+            System.out.println("Error durante el select");        
+        }
+        return v;
     }
 
     @Override
     public boolean agregarproveedor(Proveedor proveedor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String consulta = " insert into proveedor( nombre, ruc, direccion, estado)  "
+                        + " values(  "
+                       
+                        + "'"+ proveedor.getNombre() +"', "
+                        + "'"+ proveedor.getRuc() +"',  "
+                        + "'"+ proveedor.getDireccion() +"',  "                        
+                        + "'"+ proveedor.getEstado() +"'); ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            pst.executeUpdate();
+        } catch (SQLException v) {
+            System.out.println("Error durante la insert del nuevo proveedor");
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean editarproveedor(Proveedor proveedor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String consulta = " update producto  "
+                        + " set  "
+                        
+                        + " nombre = '"+ proveedor.getNombre() +"', "
+                        + " precio = '"+ proveedor.getRuc() +"', "
+                        + " stock = '"+ proveedor.getDireccion() +"', "
+                        + " estado = '"+ proveedor.getEstado() +"'  "
+                        + " where "
+                        + " idproducto = " + proveedor.getIdproveedor() + "; ";
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            pst.executeUpdate();
+        } catch (SQLException v) {
+            System.out.println("Error durante la edición del proveedor");
+            return true;
+        }
+        return false;
     }
 
-    @Override
-    public boolean eliminarproveedor(Proveedor proveedor) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
+    public boolean eliminarproveedor( int idproveedor) {
+         String consulta = " delete  "
+                        + " from proveedor  "
+                        + " where "
+                        + " idproveedor = " + idproveedor;
+        try {
+            con = cn.getConnection();
+            pst = con.prepareStatement(consulta);
+            pst.executeUpdate();
+        } catch (SQLException v) {
+            System.out.println("Error durante la elimiación del proveedor");
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -74,5 +159,15 @@ public class ProveedorDAO implements CRUD {
     public boolean eliminarproducto(Producto producto) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+
+    @Override
+    public boolean eliminarproveedor(Proveedor proveedor) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    
+
+  
+
     
 }

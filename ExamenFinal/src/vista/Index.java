@@ -8,6 +8,8 @@ import java.util.List;
 import modelo.Producto;
 import modeloDAO.ProductoDAO;
 import utils.Leer;
+import modelo.Proveedor;
+import modeloDAO.ProveedorDAO;
 /**
  *
  * @author sandr
@@ -36,12 +38,40 @@ public class Index {
         
     }
     
+    public static void AgregarProveedor(){
+        String nombre;
+        
+        String ruc;
+        String direccion;          
+        String estado;
+        System.out.println("Agregar Nuevo Proveedor");
+      
+        System.out.print("Nombre: ");
+        nombre = Leer.cadena();
+        System.out.print("ruc: ");
+        ruc= Leer.cadena();
+        System.out.print("direccion: ");
+        direccion= Leer.cadena();        
+        System.out.print("Estado: ");
+        estado = Leer.cadena();
+        Proveedor proveedor = new Proveedor( nombre, ruc,direccion , estado);
+        ProveedorDAO proveedorDAO = new ProveedorDAO();
+        proveedorDAO.agregarproveedor(proveedor);
+        
+    }
     public static void EliminarProducto(){
         ListarProducto();
         System.out.print("Ingrese el ID del producto a Eliminar: ");
         int id = Leer.entero();
         ProductoDAO productoDAO = new ProductoDAO();
         productoDAO.eliminarproducto(id);
+    }
+    public static void EliminarProveedor(){
+        ListarProveedor();
+        System.out.print("Ingrese el ID del proveedor a Eliminar: ");
+        int id = Leer.entero();
+        ProveedorDAO proveedorDAO = new ProveedorDAO();
+        proveedorDAO.eliminarproveedor(id);
     }
     
     public static void EditarProducto(){
@@ -68,6 +98,32 @@ public class Index {
         ProductoDAO productoDAO = new ProductoDAO();
         productoDAO.editarproducto(producto);
     }
+    
+    public static void EditarProveedor(){
+        ListarProveedor();
+        System.out.print("Ingrese el ID del proveedor a Editar: ");
+        int id = Leer.entero();
+        
+        String nombre;
+        String ruc;
+        String direccion;        
+        String estado;
+        System.out.println("Editar Proveedor");
+        
+        System.out.print("Nombre: ");
+        nombre = Leer.cadena();
+        System.out.print("ruc: ");
+        ruc= Leer.cadena();
+        System.out.print("direccion: ");
+        direccion= Leer.cadena();        
+        System.out.print("Estado: ");
+        estado = Leer.cadena();
+        Proveedor proveedor = new Proveedor( nombre, ruc,direccion , estado);
+        ProveedorDAO proveedorDAO = new ProveedorDAO();
+        proveedorDAO.editarproveedor(proveedor);
+    }
+    
+    
     public static void ListarProducto(){
         ProductoDAO productoDAO = new ProductoDAO();
         List<Producto> productos = productoDAO.listarproducto();
@@ -82,7 +138,19 @@ public class Index {
         }
     }
         
-        
+        public static void ListarProveedor(){
+        ProveedorDAO proveedorDAO = new ProveedorDAO();
+        List<Proveedor> proveedores = proveedorDAO.listarproveedor();
+        System.out.println("ID\t\tnombre\t\truc\t\tdireccion\t\tEstado");
+        for(Proveedor proveedor : proveedores) {
+            System.out.println( proveedor.getIdproveedor() + "\t" + 
+                               
+                                darFormato(proveedor.getNombre()) + "\t\t" + 
+                                proveedor.getRuc() + "\t\t" +
+                                proveedor.getDireccion() + "\t\t" +
+                                proveedor.getEstado());            
+        }
+    }
       public static String darFormato(String cadena){
         if (cadena.length()>=28) {
             cadena = cadena.substring(0,29) + "..";
@@ -117,10 +185,16 @@ public class Index {
         System.out.println("2. Eliminar Producto");
         System.out.println("3. Editar Producto");
         System.out.println("4. Listar Producto");
-        System.out.println("5. Salir");
-        System.out.print("Elegir las opciones [1-5]: ");
+        System.out.println("5. Agregar Proveedor");
+        System.out.println("6. Eliminar Proveedor");
+        System.out.println("7. Editar Proveedor");
+        System.out.println("8. Listar Proveedor");
+        System.out.println("9. Salir");
+        System.out.print("Elegir las opciones [1-9]: ");
         
     }
+      
+      
       
        public static void inicio(){
         int opcion;
@@ -140,13 +214,25 @@ public class Index {
                 case 4:
                     ListarProducto();
                     break;
-                case 5:
+                 case 5:
+                    AgregarProveedor();
+                    break;
+                case 6:
+                    EliminarProveedor();
+                    break;
+                case 7:
+                    EditarProveedor();
+                    break;
+                case 8:
+                    ListarProveedor();
+                    break;
+                case 9:
                     salir();
                     break;
                 default:
                     error(1);
             }            
-        } while (opcion!=5);
+        } while (opcion!=9);
     }
     public static void main(String[] args) {
         inicio();
